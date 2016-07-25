@@ -1,0 +1,93 @@
+
+
+sudo wget http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
+sudo apt-key add mosquitto-repo.gpg.key
+cd /etc/apt/sources.list.d/
+sudo wget http://repo.mosquitto.org/debian/mosquitto-wheezy.list
+sudo apt-get update
+sudo apt-get install mosquitto
+
+sudo apt-get install mosquitto mosquitto-clients python-mosquitto
+
+sudo /etc/init.d/mosquitto stop
+
+Open the file as follows:
+sudo nano /etc/mosquitto/mosquitto.conf
+You should see the following:
+# Place your local configuration in /etc/mosquitto/conf.d/
+#
+# A full description of the configuration file is at
+# /usr/share/doc/mosquitto/examples/mosquitto.conf.example
+
+pid_file /var/run/mosquitto.pid
+
+persistence true
+persistence_location /var/lib/mosquitto/
+
+log_dest file /var/log/mosquitto/mosquitto.log
+
+include_dir /etc/mosquitto/conf.d
+
+Change the “log_dest” line to:
+
+log_dest topic
+This puts the logging information as a “topic” so we can subscribe to it later on to see what is going on in our IOTRFID system.
+Next add the next six lines:
+log_type error
+log_type warning
+log_type notice
+log_type information
+
+connection_messages true
+log_timestamp true
+Now your /etc/mosquitto.conf files should look like:
+# Place your local configuration in /etc/mosquitto/conf.d/
+#
+# A full description of the configuration file is at
+# /usr/share/doc/mosquitto/examples/mosquitto.conf.example
+
+pid_file /var/run/mosquitto.pid
+
+persistence true
+persistence_location /var/lib/mosquitto/
+
+log_dest topic
+
+
+log_type error
+log_type warning
+log_type notice
+log_type information
+
+connection_messages true
+log_timestamp true
+
+Starting the Mosquitto Server
+Now start the mosquitto server:
+sudo /etc/init.d/mosquitto start
+
+Testing the Mosquitto server
+
+Open up two more terminal windows.
+In Terminal window 1 type:
+mosquitto_sub -d -t hello/world
+In Terminal window 2 type:
+mosquitto_pub -d -t hello/world -m "Hello from Terminal window 2!"
+When you have done the second statement you should see this in the Terminal 1 window.
+~ $ sudo mosquitto_sub -d -t hello/world
+Client mosqsub/3014-LightSwarm sending CONNECT
+Client mosqsub/3014-LightSwarm received CONNACK
+Client mosqsub/3014-LightSwarm sending SUBSCRIBE (Mid: 1, Topic: hello/world, QoS: 0)
+Client mosqsub/3014-LightSwarm received SUBACK
+Subscribed (mid: 1): 0
+Client mosqsub/3014-LightSwarm received PUBLISH (d0, q0, r0, m0, 'hello/world', ... (32 bytes))
+Greetings from Terminal window 2
+
+
+
+sudo pip install paho-mqtt
+
+
+
+
+
